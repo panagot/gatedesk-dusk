@@ -13,8 +13,8 @@ Draft offline, then paste into the official form.
 **Stage:** Live beta (Dusk Connect + hosted desk; Citadel prove = policy adapter until Moat soft-connect)
 
 **Grant size requested:** $4,000  
-- **Kickoff $1,500** — Live beta acceptance: Connect bind path + hosted desk + public Apache 2.0 repo; invoice to begin.  
-- **Finish $2,500** — Citadel/Moat soft-connect on testnet (or official adapter), prove uses protocol session (not HMAC adapter), transfer-gate hook stub, tests + short maintenance note. Paid when Connect bind + Citadel session path work in browser.
+- **Kickoff $1,500 (~1–1.5 weeks)** — Live beta acceptance: Connect bind path + hosted desk + public Apache 2.0 repo; invoice to begin. Solo FTE.  
+- **Finish $2,500 (~2–2.5 weeks)** — Citadel/Moat soft-connect on testnet (or official adapter), prove uses protocol session (not HMAC adapter), transfer-gate hook stub, tests/CI, **12-month maintenance plan** for the repo (deps, Connect/Citadel adapter updates, issue triage). Paid when Connect bind + Citadel session path work in browser.
 
 **Strategic alignment:** FMI onboarding gap — issuer policy and investor eligibility before Trade / EURQ settlement. Complements Dusk Trade.
 
