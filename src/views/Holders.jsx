@@ -14,7 +14,7 @@ function fmt(iso) {
 }
 
 export function Holders() {
-  const { investors, policies, revokeInvestor, bindWallet } = useGate();
+  const { investors, policies, revokeInvestor, bindWallet, makeWallet, shortWallet } = useGate();
   const [toast, setToast] = useState(null);
   const [filter, setFilter] = useState("all");
 
@@ -79,9 +79,10 @@ export function Holders() {
                     <span className={`pill ${inv.status}`}>{inv.status}</span>
                   </div>
                   <div className="mono">
-                    {inv.wallet || "no wallet"} · {inv.cookieRef} ·{" "}
+                    {inv.wallet ? shortWallet(inv.wallet) : "no wallet"} · {inv.cookieRef} ·{" "}
                     {LICENSE_PROVIDERS.find((l) => l.id === inv.lpId)?.name || inv.lpId} · proved{" "}
                     {fmt(inv.provedAt)}
+                    {inv.revokedAt ? ` · revoked ${fmt(inv.revokedAt)}` : ""}
                   </div>
                   <div className="chips">
                     {inv.attributes.map((id) => (
@@ -103,8 +104,8 @@ export function Holders() {
                       type="button"
                       className="btn sm ghost"
                       onClick={() => {
-                        bindWallet(inv.id, "dusk1qauto…bound");
-                        setToast("Wallet auto-bound (DEMO)");
+                        const r = bindWallet(inv.id, makeWallet(inv.id));
+                        setToast(r.ok ? "Wallet bound (simulated)" : r.error || "Bind failed");
                         setTimeout(() => setToast(null), 2000);
                       }}
                     >

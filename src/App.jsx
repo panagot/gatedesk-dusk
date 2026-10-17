@@ -3,16 +3,19 @@ import { Home } from "./views/Home.jsx";
 import { Policies } from "./views/Policies.jsx";
 import { Prove } from "./views/Prove.jsx";
 import { Holders } from "./views/Holders.jsx";
+import { Gate } from "./views/Gate.jsx";
+import { Guide } from "./views/Guide.jsx";
 import { Audit } from "./views/Audit.jsx";
 import { Spec } from "./views/Spec.jsx";
 import { Ask } from "./views/Ask.jsx";
 
 const NAV = [
+  ["/guide", "Guide"],
   ["/policies", "Policies"],
   ["/prove", "Prove"],
   ["/holders", "Holders"],
+  ["/gate", "Gate"],
   ["/audit", "Audit"],
-  ["/spec", "Spec"],
   ["/ask", "Ask"],
 ];
 
@@ -40,8 +43,8 @@ export default function App() {
             </Link>
           ))}
         </nav>
-        <Link href="/prove" className="btn sm">
-          Prove eligibility
+        <Link href="/guide" className="btn sm">
+          Guided demo
         </Link>
       </header>
 
@@ -58,9 +61,11 @@ export default function App() {
 
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/guide" component={Guide} />
         <Route path="/policies" component={Policies} />
         <Route path="/prove" component={Prove} />
         <Route path="/holders" component={Holders} />
+        <Route path="/gate" component={Gate} />
         <Route path="/audit" component={Audit} />
         <Route path="/spec" component={Spec} />
         <Route path="/ask" component={Ask} />

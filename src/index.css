@@ -864,6 +864,73 @@ textarea {
   gap: 0.35rem;
 }
 
+.stage-rail {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+.stage-rail li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--mute);
+}
+.stage-rail li .sn {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--copper);
+}
+.stage-rail li.on {
+  border-color: var(--navy);
+  color: var(--ink);
+  background: var(--steel-soft);
+}
+.stage-rail li.done {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+.license-card {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.action-deny,
+.action-license {
+  color: var(--rust);
+  font-weight: 650;
+}
+.action-license {
+  color: var(--copper);
+}
+.action-allow {
+  color: var(--ok);
+  font-weight: 650;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+  .btn:active {
+    transform: none;
+  }
+}
+
 @media (max-width: 900px) {
   .hero,
   .desk-layout,
@@ -873,7 +940,8 @@ textarea {
   .grid-4,
   .steps,
   .stat-strip,
-  .opt-grid {
+  .opt-grid,
+  .stage-rail {
     grid-template-columns: 1fr;
   }
   .stat-strip div {

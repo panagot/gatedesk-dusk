@@ -22,13 +22,17 @@ Private repo: https://github.com/panagot/gatedesk-dusk
 
 | Page | Purpose |
 |------|---------|
-| [/](https://gatedesk-navy.vercel.app/) | Thesis + workflow |
+| [/](https://gatedesk-navy.vercel.app/) | Thesis |
+| [/guide](https://gatedesk-navy.vercel.app/guide) | Guided demo (deny → fix → gate) |
 | [/policies](https://gatedesk-navy.vercel.app/policies) | Issuer eligibility rules |
-| [/prove](https://gatedesk-navy.vercel.app/prove) | Investor DEMO proof + bind |
+| [/prove](https://gatedesk-navy.vercel.app/prove) | Staged LP license → SP verify → bind |
 | [/holders](https://gatedesk-navy.vercel.app/holders) | Allowlist · revoke |
+| [/gate](https://gatedesk-navy.vercel.app/gate) | Transfer allow / deny |
 | [/audit](https://gatedesk-navy.vercel.app/audit) | Compliance trail |
-| [/spec](https://gatedesk-navy.vercel.app/spec) | Citadel / Connect / EURQ path |
+| [/spec](https://gatedesk-navy.vercel.app/spec) | Citadel / Connect path |
 | [/ask](https://gatedesk-navy.vercel.app/ask) | $8,000 milestones |
+
+Local: `npm run dev` → http://localhost:5350/
 
 ---
 

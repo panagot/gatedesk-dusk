@@ -10,7 +10,7 @@ const MODES = [
 ];
 
 export function Policies() {
-  const { policies, publishPolicy } = useGate();
+  const { policies, publishPolicy, publishDraft } = useGate();
   const [open, setOpen] = useState(false);
   const [toast, setToast] = useState(null);
   const [name, setName] = useState("New SME Note");
@@ -158,7 +158,20 @@ export function Policies() {
                 </div>
               </div>
               <div className="actions">
-                <Link href="/prove" className="btn sm ghost">
+                {p.status === "draft" && (
+                  <button
+                    type="button"
+                    className="btn sm"
+                    onClick={() => {
+                      publishDraft(p.id);
+                      setToast("Draft published live");
+                      setTimeout(() => setToast(null), 2000);
+                    }}
+                  >
+                    Publish draft
+                  </button>
+                )}
+                <Link href={`/prove?policy=${p.id}`} className="btn sm ghost">
                   Prove against
                 </Link>
               </div>

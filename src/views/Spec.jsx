@@ -50,14 +50,16 @@ export function Spec() {
         </div>
 
         <div className="spec-block">
-          <h3>Lifecycle</h3>
-          <pre>{`publishPolicy(attrs[], trustedLPs[], mode) → Policy
-prove(policyId, lpId, claimedAttrs) → Cookie | Deny
-  → Citadel: license exists ZK · attributes off-chain
-bind(cookie, duskWallet) → Holder
-revoke(holderId) → transfers denied + audit
+          <h3>Lifecycle (DEMO today)</h3>
+          <pre>{`publishPolicy(...) → Policy
+issueLicense(lpId, attrs) → License + sim_sig_*
+proveWithLicense(policyId, license) → Cookie | Deny
+  → verifyLicense(sig) + policy attrs (simulated, not ZK)
+bind(investorId, wallet) → Holder
+attemptTransfer(policyId, wallet) → ALLOW | DENY
+revoke(holderId) → next attemptTransfer DENY
 
-Transfer gate: only bound non-revoked holders for allowlist mode`}</pre>
+M2: replace sim_sig with Citadel session; Dusk Connect bind`}</pre>
         </div>
 
         <div className="spec-block">
