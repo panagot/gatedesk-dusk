@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useSearch } from "wouter";
+import { ConnectBind } from "../components/ConnectBind.jsx";
 import { ATTRIBUTES, LICENSE_PROVIDERS, LP_PROFILES } from "../data/seed.js";
 import { useGate } from "../state.jsx";
-import { shortWallet, verifyLicense } from "../lib/simCrypto.js";
+import { verifyLicense } from "../lib/simCrypto.js";
 
 const STEPS = [
   { id: 1, label: "Policy + LP" },
@@ -17,7 +18,6 @@ export function Prove() {
     issueLicense,
     proveWithLicense,
     bindWallet,
-    makeWallet,
     evaluatePolicy,
   } = useGate();
   const [, setLoc] = useLocation();
@@ -46,15 +46,12 @@ export function Prove() {
   const [license, setLicense] = useState(null);
   const [result, setResult] = useState(null);
   const [wallet, setWallet] = useState("");
+  const [bindMeta, setBindMeta] = useState({ viaConnect: false });
   const [toast, setToast] = useState(null);
   const [busy, setBusy] = useState(false);
 
   const policy = policies.find((p) => p.id === policyId);
   const profile = LP_PROFILES.find((p) => p.id === profileId);
-
-  useEffect(() => {
-    if (!wallet) setWallet(makeWallet("prove"));
-  }, []);
 
   function flash(msg) {
     setToast(msg);
@@ -74,7 +71,7 @@ export function Prove() {
       setResult(null);
       setStep(3);
       setBusy(false);
-      flash("Simulated LP license issued");
+      flash("LP license issued (policy adapter)");
     }, 450);
   }
 
@@ -91,7 +88,7 @@ export function Prove() {
       setBusy(false);
       if (r.ok) {
         setStep(4);
-        flash("Session cookie issued (simulated)");
+        flash("Session cookie issued");
       } else {
         flash("SP denied — fix license profile or LP");
       }
@@ -100,12 +97,16 @@ export function Prove() {
 
   function onBind() {
     if (!result?.ok || !result.investor) return;
-    const r = bindWallet(result.investor.id, wallet);
+    if (!wallet) {
+      flash("Connect a Dusk wallet (or paste an account id)");
+      return;
+    }
+    const r = bindWallet(result.investor.id, wallet, bindMeta);
     if (!r.ok) {
       flash(r.error || "Bind failed");
       return;
     }
-    flash("Wallet bound");
+    flash(bindMeta.viaConnect ? "Bound via Dusk Connect" : "Bound (manual account)");
     setTimeout(() => setLoc("/gate?demo=1"), 700);
   }
 
@@ -116,8 +117,9 @@ export function Prove() {
       <div className="page-head">
         <h1>Prove eligibility</h1>
         <p>
-          Staged Citadel-style flow (all simulated): License Provider issues a signed credential →
-          Service Provider verifies signature + policy → session cookie → bind wallet. No real ZK.
+          Live beta: LP issues a policy-adapter license → SP verifies → session cookie →{" "}
+          <strong>bind with Dusk Connect</strong>. Citadel ZK soft-connect is the grant M2 path — not
+          claimed here.
         </p>
       </div>
 
@@ -144,7 +146,7 @@ export function Prove() {
             <div className="form-grid">
               <div className="panel-head" style={{ margin: "-1.2rem -1.2rem 0", border: "none" }}>
                 <h2>1 · Choose policy + LP</h2>
-                <span className="demo-tag">Simulated</span>
+                <span className="demo-tag">Live beta</span>
               </div>
               <div className="field">
                 <label htmlFor="policy">Policy (Service Provider rules)</label>
@@ -287,8 +289,7 @@ export function Prove() {
 
               {result?.ok && (
                 <div className="callout" style={{ background: "var(--ok-soft)" }}>
-                  <strong>Accepted (simulated).</strong> Cookie {result.cookieRef}. Attributes not
-                  written on-chain.
+                  <strong>Accepted.</strong> Cookie {result.cookieRef}. Attributes stay off-ledger.
                 </div>
               )}
 
@@ -316,21 +317,24 @@ export function Prove() {
           {step === 4 && result?.ok && (
             <div className="form-grid" style={{ borderTop: "1px solid var(--line-soft)" }}>
               <div className="panel-head" style={{ margin: "-1.2rem -1.2rem 0", border: "none" }}>
-                <h2>4 · Bind wallet</h2>
+                <h2>4 · Bind with Dusk Connect</h2>
+                <span className="demo-tag">Live</span>
               </div>
-              <div className="field">
-                <label htmlFor="wallet">Dusk public key (simulated)</label>
-                <input
-                  id="wallet"
-                  value={wallet}
-                  onChange={(e) => setWallet(e.target.value)}
-                />
-                <div className="hint">
-                  Milestone 2: Dusk Connect discovery. Format is DEMO only (
-                  {shortWallet(wallet)}).
-                </div>
-              </div>
-              <button type="button" className="btn" onClick={onBind}>
+              <ConnectBind
+                value={wallet}
+                onChange={(v) => {
+                  setWallet(v);
+                  setBindMeta((m) => ({ ...m, viaConnect: false }));
+                }}
+                onConnected={(r) => {
+                  setBindMeta({
+                    viaConnect: true,
+                    providerName: r.providerName,
+                    chainId: r.chainId,
+                  });
+                }}
+              />
+              <button type="button" className="btn" onClick={onBind} disabled={!wallet}>
                 Bind + open Transfer Gate
               </button>
             </div>
@@ -343,11 +347,11 @@ export function Prove() {
             <div className="value" style={{ fontSize: "1.2rem" }}>
               {step} / 4
             </div>
-            <div className="hint">Simulated Citadel path</div>
+            <div className="hint">Connect bind · policy adapter</div>
           </div>
           <div style={{ padding: "1rem 1.15rem", fontSize: "0.88rem", color: "var(--ink-soft)" }}>
-            Real Citadel: LP publishes encrypted license on-chain → user proves possession in ZK →
-            SP reads session cookie. This DEMO replaces ZK with a local HMAC-style signature check.
+            Live today: Dusk Connect account bind + hosted desk sync. Prove uses a policy-adapter
+            license (not Citadel ZK). M2 replaces the adapter with Moat/Citadel soft-connect.
           </div>
           <div style={{ padding: "0 1.15rem 1.15rem" }}>
             <Link href="/guide" className="btn ghost sm" style={{ width: "100%" }}>

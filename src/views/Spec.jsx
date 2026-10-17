@@ -6,8 +6,8 @@ export function Spec() {
       <div className="page-head">
         <h1>Integration spec</h1>
         <p>
-          Soft-connect path to Citadel 2, Dusk Connect, and regulated settlement. DEMO UI first;
-          Milestone 2 wires protocol handlers.
+          Live beta wires Dusk Connect + hosted desk today. Milestone 2 soft-connects Citadel /
+          Moat for the prove session path.
         </p>
       </div>
 
@@ -50,16 +50,16 @@ export function Spec() {
         </div>
 
         <div className="spec-block">
-          <h3>Lifecycle (DEMO today)</h3>
+          <h3>Lifecycle (live beta today)</h3>
           <pre>{`publishPolicy(...) → Policy
-issueLicense(lpId, attrs) → License + sim_sig_*
+issueLicense(lpId, attrs) → License + policy-adapter sig
 proveWithLicense(policyId, license) → Cookie | Deny
-  → verifyLicense(sig) + policy attrs (simulated, not ZK)
-bind(investorId, wallet) → Holder
-attemptTransfer(policyId, wallet) → ALLOW | DENY
+  → verifyLicense(sig) + policy attrs (not Citadel ZK yet)
+bind via @dusk/connect → Holder (real account when extension present)
+attemptTransfer(policyId, wallet) → ALLOW | DENY  (hosted desk)
 revoke(holderId) → next attemptTransfer DENY
 
-M2: replace sim_sig with Citadel session; Dusk Connect bind`}</pre>
+M2: replace adapter with Citadel/Moat session`}</pre>
         </div>
 
         <div className="spec-block">

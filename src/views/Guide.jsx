@@ -19,10 +19,10 @@ const STEPS = [
   },
   {
     n: "3",
-    title: "Bind wallet",
-    body: "Complete step 4 on Prove. You will be sent to the Transfer Gate.",
+    title: "Bind with Dusk Connect",
+    body: "Step 4: Connect Dusk Wallet (or paste account if no extension). Then open Transfer Gate.",
     href: "/prove?guide=1",
-    cta: "Prove → bind",
+    cta: "Prove → Connect bind",
   },
   {
     n: "4",
@@ -48,10 +48,10 @@ export function Guide() {
   return (
     <main className="main">
       <div className="page-head">
-        <h1>Guided demo</h1>
+        <h1>Guided beta</h1>
         <p>
-          Five-minute reviewer path. All steps are simulated — no live Citadel or chain. Use Reset
-          if state from a previous session is messy.
+          Five-minute reviewer path. Connect bind is live; prove uses a policy adapter (not Citadel
+          ZK). Desk state is hosted — Reset clears the shared desk.
         </p>
       </div>
 

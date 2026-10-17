@@ -34,7 +34,7 @@ export function Gate() {
     if (!policyId || !wallet) return;
     const row = attemptTransfer({ policyId, wallet, amount });
     setLast(row);
-    setToast(row.ok ? "Transfer ALLOWED (simulated)" : "Transfer DENIED");
+    setToast(row.ok ? "Transfer ALLOWED" : "Transfer DENIED");
     setTimeout(() => setToast(null), 2200);
   }
 
@@ -54,9 +54,9 @@ export function Gate() {
       <div className="page-head">
         <h1>Transfer Gate</h1>
         <p>
-          Enforce the allowlist: attempt a transfer against a policy. Bound holders pass; revoked
-          holders are denied. This is the missing “who enforces this?” demo — still simulated, no
-          on-chain token.
+          Enforce the allowlist against Connect-bound holders. Bound wallets pass; revoked holders
+          are denied. Gate logic is live in the hosted desk — settlement still off-chain until M2
+          hooks a DuskVM / DuskEVM guard.
         </p>
       </div>
 
@@ -71,7 +71,7 @@ export function Gate() {
         <div className="panel">
           <div className="panel-head">
             <h2>Attempt transfer</h2>
-            <span className="demo-tag">Simulated</span>
+            <span className="demo-tag">Live beta</span>
           </div>
           <div className="form-grid">
             <div className="field">
@@ -155,8 +155,8 @@ export function Gate() {
             <div className="hint">Logged to audit</div>
           </div>
           <div style={{ padding: "1rem 1.15rem", fontSize: "0.88rem", color: "var(--ink-soft)" }}>
-            M2 would hook this check into a DuskVM / DuskEVM transfer guard. Today the gate is the
-            product proof that revoke changes outcomes.
+            M2 hooks this check into a DuskVM / DuskEVM transfer guard. Today the gate proves revoke
+            changes outcomes on the shared desk.
           </div>
           <div style={{ padding: "0 1.15rem 1rem", display: "grid", gap: "0.4rem" }}>
             <Link href="/holders" className="btn ghost sm">

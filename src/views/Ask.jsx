@@ -1,13 +1,17 @@
 import { Link } from "wouter";
+import { Tip } from "../components/Tooltip.jsx";
 
 export function Ask() {
   return (
     <main className="main">
       <div className="page-head">
-        <h1>$8,000 · Development Subsidy</h1>
+        <h1>
+          $4,000 · Development Subsidy{" "}
+          <Tip label="Smaller ask, sharper delivery: live Connect beta now; Citadel soft-connect as finish." />
+        </h1>
         <p>
-          Milestone grant for Gate Desk on Dusk — investor eligibility studio for Citadel +
-          regulated asset workflows.
+          Kickoff funds the live beta reviewers can exercise today. Finish funds Citadel/Moat
+          soft-connect so prove stops using the policy adapter.
         </p>
       </div>
 
@@ -18,35 +22,32 @@ export function Ask() {
             <span className="demo-tag">Ask</span>
           </div>
           <div className="milestone">
-            <div className="amt">M1 · $3,000</div>
-            <h3>Demo acceptance + public repo</h3>
+            <div className="amt">Kickoff · $1,500</div>
+            <h3>Begin — live beta acceptance</h3>
             <p>
-              Accept this interactive DEMO (Guide → Prove → Gate → Audit). Open-source Apache 2.0
-              on GitHub, LICENSE committed, invoice for kickoff. Acceptance = reviewer completes
-              deny→fix→bind→revoke gate flip.
+              Invoice to start. Acceptance = reviewer completes Guide (deny→fix→Connect bind→gate
+              flip) on the hosted desk. Public Apache 2.0 repo + LICENSE.
             </p>
           </div>
           <div className="milestone">
-            <div className="amt">M2 · $5,000</div>
-            <h3>Citadel soft-connect + Dusk Connect</h3>
+            <div className="amt">Finish · $2,500</div>
+            <h3>Done — Citadel soft-connect</h3>
             <p>
-              Replace simulated HMAC with Citadel session path on testnet (or documented adapter
-              when JS SDK lands); Dusk Connect wallet bind; transfer-gate hook stub; unit tests;
-              one-year maintenance plan. Done when: prove against a deployed/test Citadel contract
-              or official mock, Connect bind works in browser, CI green.
+              Paid when prove uses a Citadel/Moat protocol session (not HMAC adapter), Connect bind
+              still works, transfer-gate hook stub + short tests/CI note. Total grant $4,000.
             </p>
           </div>
           <div className="milestone">
-            <div className="amt">Total · $8,000</div>
-            <h3>~4–5 weeks solo</h3>
+            <div className="amt">Total · $4,000</div>
+            <h3>~3–4 weeks solo</h3>
             <p>
-              Metrics: guided-demo completion, prove deny/allow rates, gate flip demos, public
-              stars/forks, Citadel/Connect issues filed upstream.
+              Metrics: guided-beta completion, Connect bind rate, gate flip demos, finish = session
+              path live in browser.
             </p>
           </div>
           <div style={{ padding: "1.1rem 1.2rem" }}>
             <Link href="/guide" className="btn">
-              Run guided demo
+              Run guided beta
             </Link>
           </div>
         </div>
@@ -60,18 +61,18 @@ export function Ask() {
             <div className="hint">Open source · Apache 2.0</div>
           </div>
           <div className="side-stat">
-            <div className="label">Strategic fit</div>
-            <div className="value" style={{ fontSize: "1.1rem" }}>
-              FMI / RWA
+            <div className="label">Kickoff</div>
+            <div className="value" style={{ fontSize: "1.35rem" }}>
+              $1,500
             </div>
-            <div className="hint">Onboarding · Citadel</div>
+            <div className="hint">To begin</div>
           </div>
           <div className="side-stat">
-            <div className="label">Stage</div>
-            <div className="value" style={{ fontSize: "1.1rem" }}>
-              MVP / Alpha
+            <div className="label">Finish</div>
+            <div className="value" style={{ fontSize: "1.35rem" }}>
+              $2,500
             </div>
-            <div className="hint">Simulated DEMO</div>
+            <div className="hint">Once soft-connect ships</div>
           </div>
           <div className="side-stat">
             <div className="label">Contact</div>
@@ -83,11 +84,10 @@ export function Ask() {
       </div>
 
       <section className="section">
-        <h2>Impact on Dusk</h2>
+        <h2>Why this split</h2>
         <p className="sub">
-          Makes Citadel’s “prove, don’t reveal” clickable for issuers and venues. Shows a transfer
-          gate that reacts to revoke — the enforcement story reviewers ask for — without shipping a
-          competing Trade or DEX.
+          Kickoff pays for a usable Connect-bound desk. Finish pays only when Citadel is soft-wired —
+          no claiming ZK before it exists in-browser.
         </p>
       </section>
 
@@ -95,25 +95,16 @@ export function Ask() {
         <h2>FAQ</h2>
         <div className="panel faq" style={{ padding: "0 1.15rem" }}>
           <details open>
-            <summary>Is the proof real ZK?</summary>
-            <p>
-              No. This DEMO uses a local simulated signature. M2 targets Citadel’s real session
-              path. Labels say “simulated” throughout.
-            </p>
+            <summary>Is prove Citadel ZK today?</summary>
+            <p>No — policy adapter. Finish milestone replaces it with Moat/Citadel session path.</p>
           </details>
           <details>
-            <summary>Why not Dusk Trade?</summary>
-            <p>
-              Trade is Dusk’s full product. Gate Desk is the eligibility wedge only — smaller scope,
-              clearer demo, Citadel-first.
-            </p>
+            <summary>What is live at kickoff?</summary>
+            <p>Dusk Connect bind, hosted Supabase desk, Transfer Gate allow/deny, guided reviewer UI.</p>
           </details>
           <details>
             <summary>Open source / KYB?</summary>
-            <p>
-              Apache 2.0 LICENSE in repo. Sole builder can invoice milestones. Repo can be public on
-              M1 acceptance.
-            </p>
+            <p>Apache 2.0 LICENSE in repo. Sole builder can invoice each tranche.</p>
           </details>
         </div>
       </section>

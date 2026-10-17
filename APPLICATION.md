@@ -6,24 +6,24 @@ Draft offline, then paste into the official form.
 
 **Project name:** Gate Desk
 
-**One-liner:** Investor eligibility studio for Dusk — simulated Citadel license → SP verify → wallet bind → transfer gate that denies after revoke.
+**One-liner:** Live-beta investor eligibility desk for Dusk — policy → license adapter → Dusk Connect bind → transfer gate; Citadel soft-connect is the funded finish.
 
 **Email:** panagiotispollis@gmail.com
 
-**Stage:** MVP / Alpha (interactive DEMO; cryptography simulated)
+**Stage:** Live beta (Dusk Connect + hosted desk; Citadel prove = policy adapter until Moat soft-connect)
 
-**Grant size requested:** $8,000  
-- **M1 $3,000** — Demo acceptance: reviewer completes Guide (deny→fix→bind→gate flip); public Apache 2.0 repo + LICENSE; kickoff invoice.  
-- **M2 $5,000** — Citadel soft-connect on testnet (or official adapter), Dusk Connect bind, transfer-gate hook stub, tests + CI, 12-month maintenance plan. Done when Connect bind works in browser and prove path uses protocol session (not HMAC stub).
+**Grant size requested:** $4,000  
+- **Kickoff $1,500** — Live beta acceptance: Connect bind path + hosted desk + public Apache 2.0 repo; invoice to begin.  
+- **Finish $2,500** — Citadel/Moat soft-connect on testnet (or official adapter), prove uses protocol session (not HMAC adapter), transfer-gate hook stub, tests + short maintenance note. Paid when Connect bind + Citadel session path work in browser.
 
-**Strategic alignment:** FMI onboarding gap — issuer policy and investor eligibility before Trade / EURQ settlement. Complements Dusk Trade; does not replace it or re-pitch closed bridge/DEX RFPs.
+**Strategic alignment:** FMI onboarding gap — issuer policy and investor eligibility before Trade / EURQ settlement. Complements Dusk Trade.
 
 **Technical approach:**  
-Vite/React DEMO with staged prove (LP license + signature verify), Transfer Gate, guided demo, localStorage. Soft-connect path documented to Citadel 2 + Dusk Connect. Apache 2.0.
+Vite/React live beta with `@dusk/connect`, Supabase-hosted desk, staged prove (policy adapter today), Transfer Gate, reviewer metrics UI. Soft-connect to Citadel 2 / Moat. Apache 2.0.
 
-**Team:** Independent builder; invoice-capable for KYB/milestones. Contact: panagiotispollis@gmail.com
+**Team:** Independent builder; invoice-capable. Contact: panagiotispollis@gmail.com
 
-**Quantifiable deliverables:** Guided-demo completion, deny/allow rates, gate flip demos, public repo, M2 testnet prove + Connect bind.
+**Quantifiable deliverables:** Guided-beta completion, Connect bind rate, deny/allow gate flips, public repo, finish milestone = Citadel session path.
 
 **Open source:** Apache 2.0 (LICENSE in repo)
 

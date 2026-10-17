@@ -164,7 +164,7 @@ export const INITIAL_AUDIT = [
 
 export const WORKFLOW = [
   { n: "01", title: "Issuer sets policy", body: "Pick required attributes, trusted License Providers, and transfer mode for the asset." },
-  { n: "02", title: "LP issues license", body: "A trusted License Provider issues a signed credential (simulated HMAC in this DEMO)." },
-  { n: "03", title: "SP verifies + bind", body: "Gate Desk checks signature and policy, issues a session cookie, then binds a Dusk wallet." },
+  { n: "02", title: "LP issues license", body: "Trusted LP issues a policy-adapter license (Citadel ZK soft-connect is M2)." },
+  { n: "03", title: "SP verify + Connect bind", body: "Gate Desk verifies policy, issues a session cookie, then binds via Dusk Connect." },
   { n: "04", title: "Transfer gate", body: "Attempt a transfer: allow only if bound and not revoked. Revoke flips the gate." },
 ];

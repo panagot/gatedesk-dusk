@@ -1,54 +1,43 @@
 # Gate Desk
 
-**Investor eligibility & wallet binding for [Dusk](https://www.dusk.network/) / [Citadel](https://docs.dusk.network/developer/digital-identity/protocol/).**  
-Issuer policies → prove without PII on-chain → bind Dusk wallet → allowlist / revoke → audit.
+**Live-beta investor eligibility desk for [Dusk](https://www.dusk.network/).**  
+Issuer policies → policy-adapter license → **Dusk Connect** bind → transfer gate → hosted audit.
 
-> Prototype for [Dusk Grants](https://docs.dusk.network/developer/contribute/grants/) · ask **$8,000**  
-> **$3,000** kickoff on demo acceptance · **$5,000** on Citadel + Dusk Connect soft-connect
-
----
-
-## Why this idea
-
-Dusk’s FMI workflow starts with eligibility and wallet binding — before trade or DvP. Citadel can prove a license exists without revealing attributes; **Gate Desk** is the missing issuer/venue studio. Complements Dusk Trade (still building); does not compete with closed bridge/DEX RFPs.
+> [Dusk Grants](https://docs.dusk.network/developer/contribute/grants/) · ask **$8,000**  
+> **M1 $3,000** live beta acceptance · **M2 $5,000** Citadel/Moat soft-connect
 
 ---
 
-## Live demo
+## Live today
+
+- `@dusk/connect` wallet discovery + account bind
+- Shared desk on Supabase (not localStorage-only)
+- Transfer Gate allow / deny after revoke
+- Honest labels: prove is a **policy adapter** until Citadel soft-connect (M2)
+
+---
+
+## Demo
 
 ### https://gatedesk-navy.vercel.app/
 
-Private repo: https://github.com/panagot/gatedesk-dusk
+Repo: https://github.com/panagot/gatedesk-dusk
 
 | Page | Purpose |
 |------|---------|
 | [/](https://gatedesk-navy.vercel.app/) | Thesis |
-| [/guide](https://gatedesk-navy.vercel.app/guide) | Guided demo (deny → fix → gate) |
-| [/policies](https://gatedesk-navy.vercel.app/policies) | Issuer eligibility rules |
-| [/prove](https://gatedesk-navy.vercel.app/prove) | Staged LP license → SP verify → bind |
-| [/holders](https://gatedesk-navy.vercel.app/holders) | Allowlist · revoke |
+| [/guide](https://gatedesk-navy.vercel.app/guide) | Guided beta |
+| [/prove](https://gatedesk-navy.vercel.app/prove) | License → verify → **Connect bind** |
 | [/gate](https://gatedesk-navy.vercel.app/gate) | Transfer allow / deny |
-| [/audit](https://gatedesk-navy.vercel.app/audit) | Compliance trail |
-| [/spec](https://gatedesk-navy.vercel.app/spec) | Citadel / Connect path |
 | [/ask](https://gatedesk-navy.vercel.app/ask) | $8,000 milestones |
 
-Local: `npm run dev` → http://localhost:5350/
-
----
-
-## Grant scope ($8,000)
-
-| Milestone | Amount | Deliverable |
-|-----------|--------|-------------|
-| **M1** | $3,000 | Kickoff after demo acceptance |
-| **M2** | $5,000 | Citadel + Dusk Connect soft-connect + 1y maintenance plan |
+```bash
+cp .env.example .env   # set VITE_SUPABASE_* 
+npm install && npm run dev   # http://localhost:5350/
+```
 
 ---
 
 ## Stack
 
-Vite · React 19 · wouter · Vercel
-
-```bash
-npm install && npm run dev   # :5350
-```
+Vite · React 19 · wouter · `@dusk/connect` · Supabase · Vercel

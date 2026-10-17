@@ -1,16 +1,22 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { ATTRIBUTES, INITIAL_AUDIT, INITIAL_INVESTORS, INITIAL_POLICIES } from "./data/seed.js";
+import {
+  deskHosted,
+  loadDeskPayload,
+  saveDeskPayload,
+  subscribeDesk,
+} from "./lib/deskStore.js";
 import { makeWallet, shortWallet, signLicense, verifyLicense } from "./lib/simCrypto.js";
 
 const Ctx = createContext(null);
-const STORAGE_KEY = "gatedesk_demo_v2";
+const CACHE_KEY = "gatedesk_cache_v3";
 
 function uid(prefix) {
   return `${prefix}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
 function shortRef(prefix) {
-  return `${prefix}_sim_${Math.random().toString(16).slice(2, 8)}`;
+  return `${prefix}_${Math.random().toString(16).slice(2, 8)}`;
 }
 
 function attrLabel(id) {
@@ -18,9 +24,19 @@ function attrLabel(id) {
   return ATTRIBUTES.find((a) => a.id === id)?.label || id;
 }
 
-function loadStored() {
+function emptyDesk() {
+  return {
+    policies: INITIAL_POLICIES,
+    investors: INITIAL_INVESTORS,
+    audit: INITIAL_AUDIT,
+    licenses: [],
+    transfers: [],
+  };
+}
+
+function readCache() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return null;
     return JSON.parse(raw);
   } catch {
@@ -44,28 +60,99 @@ function evaluatePolicy(policy, license) {
   if (policy.requireAny?.length) {
     const anyOk = policy.requireAny.some((x) => license.attributes.includes(x));
     if (!anyOk) {
-      reasons.push(
-        `Need one of: ${policy.requireAny.map(attrLabel).join(" OR ")}`
-      );
+      reasons.push(`Need one of: ${policy.requireAny.map(attrLabel).join(" OR ")}`);
     }
   }
   return { ok: reasons.length === 0, reasons };
 }
 
 export function Provider({ children }) {
-  const stored = typeof window !== "undefined" ? loadStored() : null;
-  const [policies, setPolicies] = useState(stored?.policies || INITIAL_POLICIES);
-  const [investors, setInvestors] = useState(stored?.investors || INITIAL_INVESTORS);
-  const [audit, setAudit] = useState(stored?.audit || INITIAL_AUDIT);
-  const [licenses, setLicenses] = useState(stored?.licenses || []);
-  const [transfers, setTransfers] = useState(stored?.transfers || []);
+  const cache = typeof window !== "undefined" ? readCache() : null;
+  const bootstrap = cache || emptyDesk();
+  const [policies, setPolicies] = useState(bootstrap.policies);
+  const [investors, setInvestors] = useState(bootstrap.investors);
+  const [audit, setAudit] = useState(bootstrap.audit);
+  const [licenses, setLicenses] = useState(bootstrap.licenses || []);
+  const [transfers, setTransfers] = useState(bootstrap.transfers || []);
+  const [sync, setSync] = useState(deskHosted ? "loading" : "local");
+  const [hydrated, setHydrated] = useState(!deskHosted);
+  const skipNextSave = useRef(true);
+  const saveTimer = useRef(null);
+
+  const snapshot = useMemo(
+    () => ({ policies, investors, audit, licenses, transfers }),
+    [policies, investors, audit, licenses, transfers]
+  );
 
   useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ policies, investors, audit, licenses, transfers })
-    );
-  }, [policies, investors, audit, licenses, transfers]);
+    let cancelled = false;
+    if (!deskHosted) {
+      setHydrated(true);
+      setSync("local");
+      return;
+    }
+
+    (async () => {
+      try {
+        const remote = await loadDeskPayload();
+        if (cancelled) return;
+        if (remote?.payload?.policies) {
+          skipNextSave.current = true;
+          setPolicies(remote.payload.policies);
+          setInvestors(remote.payload.investors || []);
+          setAudit(remote.payload.audit || []);
+          setLicenses(remote.payload.licenses || []);
+          setTransfers(remote.payload.transfers || []);
+        } else {
+          await saveDeskPayload(emptyDesk());
+        }
+        setSync("hosted");
+      } catch (e) {
+        console.warn("desk sync load failed", e);
+        if (!cancelled) setSync("error");
+      } finally {
+        if (!cancelled) setHydrated(true);
+      }
+    })();
+
+    const unsub = subscribeDesk((payload) => {
+      if (!payload?.policies) return;
+      skipNextSave.current = true;
+      setPolicies(payload.policies);
+      setInvestors(payload.investors || []);
+      setAudit(payload.audit || []);
+      setLicenses(payload.licenses || []);
+      setTransfers(payload.transfers || []);
+      setSync("hosted");
+    });
+
+    return () => {
+      cancelled = true;
+      unsub();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(snapshot));
+
+    if (!deskHosted) return;
+    if (skipNextSave.current) {
+      skipNextSave.current = false;
+      return;
+    }
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      saveDeskPayload(snapshot)
+        .then(() => setSync("hosted"))
+        .catch((e) => {
+          console.warn("desk sync save failed", e);
+          setSync("error");
+        });
+    }, 450);
+
+    return () => clearTimeout(saveTimer.current);
+  }, [snapshot, hydrated]);
 
   const api = useMemo(
     () => ({
@@ -74,13 +161,21 @@ export function Provider({ children }) {
       audit,
       licenses,
       transfers,
+      sync,
+      deskHosted,
+      hydrated,
       resetDemo() {
-        localStorage.removeItem(STORAGE_KEY);
-        setPolicies(INITIAL_POLICIES);
-        setInvestors(INITIAL_INVESTORS);
-        setAudit(INITIAL_AUDIT);
+        const next = emptyDesk();
+        skipNextSave.current = false;
+        setPolicies(next.policies);
+        setInvestors(next.investors);
+        setAudit(next.audit);
         setLicenses([]);
         setTransfers([]);
+        localStorage.removeItem(CACHE_KEY);
+        if (deskHosted) {
+          saveDeskPayload(next).catch(() => setSync("error"));
+        }
       },
       publishPolicy(draft) {
         const id = uid("pol");
@@ -138,7 +233,7 @@ export function Provider({ children }) {
           issuedAt: now,
         };
         const signature = signLicense(payload, lpId);
-        const license = { ...payload, signature, simulated: true };
+        const license = { ...payload, signature, adapter: "policy-hmac" };
         setLicenses((list) => [license, ...list]);
         setAudit((a) => [
           {
@@ -146,7 +241,7 @@ export function Provider({ children }) {
             at: now,
             action: "license",
             actor: lpId,
-            detail: `Simulated LP license issued · ${attributes.length} attributes · sig ${signature.slice(-8)}`,
+            detail: `LP license issued (policy adapter) · ${attributes.length} attrs · sig …${signature.slice(-8)}`,
             ref: license.id,
           },
           ...a,
@@ -164,7 +259,7 @@ export function Provider({ children }) {
               at: now,
               action: "deny",
               actor: label || "Investor",
-              detail: `Simulated SP deny · ${evalResult.reasons.join("; ")}`,
+              detail: `SP deny · ${evalResult.reasons.join("; ")}`,
               ref: license?.id || "n/a",
             },
             ...a,
@@ -191,14 +286,14 @@ export function Provider({ children }) {
             at: now,
             action: "prove",
             actor: inv.label,
-            detail: `Simulated session cookie for ${policy.name} · license sig checked · attrs off-ledger`,
+            detail: `Session cookie for ${policy.name} · policy adapter (Citadel soft-connect is M2)`,
             ref: cookieRef,
           },
           ...a,
         ]);
         return { ok: true, investor: inv, cookieRef };
       },
-      bindWallet(investorId, wallet) {
+      bindWallet(investorId, wallet, meta = {}) {
         const now = new Date().toISOString();
         const w = wallet || makeWallet(investorId);
         const existing = investors.find(
@@ -213,8 +308,20 @@ export function Provider({ children }) {
         }
         const wasBound = prev.status === "bound";
         const ref = shortRef("tx");
+        const via = meta.viaConnect ? "Dusk Connect" : "manual account";
         setInvestors((list) =>
-          list.map((x) => (x.id !== investorId ? x : { ...x, wallet: w, status: "bound" }))
+          list.map((x) =>
+            x.id !== investorId
+              ? x
+              : {
+                  ...x,
+                  wallet: w,
+                  status: "bound",
+                  bindVia: meta.viaConnect ? "connect" : "manual",
+                  providerName: meta.providerName || null,
+                  chainId: meta.chainId || null,
+                }
+          )
         );
         if (!wasBound) {
           setPolicies((ps) =>
@@ -229,7 +336,7 @@ export function Provider({ children }) {
             at: now,
             action: "bind",
             actor: prev.label,
-            detail: `Wallet ${shortWallet(w)} bound · eligible holder (simulated)`,
+            detail: `Wallet ${shortWallet(w)} bound via ${via}`,
             ref,
           },
           ...a,
@@ -243,9 +350,7 @@ export function Provider({ children }) {
         const wasBound = prev.status === "bound";
         setInvestors((list) =>
           list.map((x) =>
-            x.id !== investorId
-              ? x
-              : { ...x, status: "revoked", revokedAt: now }
+            x.id !== investorId ? x : { ...x, status: "revoked", revokedAt: now }
           )
         );
         if (wasBound) {
@@ -263,7 +368,7 @@ export function Provider({ children }) {
             at: now,
             action: "revoke",
             actor: prev.label,
-            detail: "Eligibility revoked · transfer gate will deny (simulated)",
+            detail: "Eligibility revoked · transfer gate will deny",
             ref: prev.cookieRef,
           },
           ...a,
@@ -272,15 +377,11 @@ export function Provider({ children }) {
       checkTransfer({ policyId, wallet, amount }) {
         const policy = policies.find((p) => p.id === policyId);
         if (!policy) return { ok: false, reason: "Unknown policy" };
-        if (policy.status !== "live") {
-          return { ok: false, reason: "Policy not live" };
-        }
+        if (policy.status !== "live") return { ok: false, reason: "Policy not live" };
         const holder = investors.find(
           (i) => i.wallet === wallet && i.policies.includes(policyId)
         );
-        if (!holder) {
-          return { ok: false, reason: "Wallet not on this policy register" };
-        }
+        if (!holder) return { ok: false, reason: "Wallet not on this policy register" };
         if (holder.status === "revoked") {
           return { ok: false, reason: "Holder revoked — transfers denied" };
         }
@@ -289,7 +390,7 @@ export function Provider({ children }) {
         }
         return {
           ok: true,
-          reason: `Allowed under ${policy.transferMode} mode · ${amount || "1"} unit (simulated)`,
+          reason: `Allowed under ${policy.transferMode} · ${amount || "1"} unit`,
         };
       },
       attemptTransfer({ policyId, wallet, amount }) {
@@ -312,7 +413,7 @@ export function Provider({ children }) {
             } else {
               result = {
                 ok: true,
-                reason: `Allowed under ${policy.transferMode} mode · ${amount || "1"} unit (simulated)`,
+                reason: `Allowed under ${policy.transferMode} · ${amount || "1"} unit`,
               };
             }
           }
@@ -347,7 +448,7 @@ export function Provider({ children }) {
       makeWallet,
       shortWallet,
     }),
-    [policies, investors, audit, licenses, transfers]
+    [policies, investors, audit, licenses, transfers, sync, hydrated]
   );
 
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>;
