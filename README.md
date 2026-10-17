@@ -16,17 +16,19 @@ Dusk’s FMI workflow starts with eligibility and wallet binding — before trad
 
 ## Live demo
 
-_Deploy URL after Vercel ship._
+### https://gatedesk-navy.vercel.app/
+
+Private repo: https://github.com/panagot/gatedesk-dusk
 
 | Page | Purpose |
 |------|---------|
-| `/` | Thesis + workflow |
-| `/policies` | Issuer eligibility rules |
-| `/prove` | Investor DEMO proof + bind |
-| `/holders` | Allowlist · revoke |
-| `/audit` | Compliance trail |
-| `/spec` | Citadel / Connect / EURQ path |
-| `/ask` | $8,000 milestones |
+| [/](https://gatedesk-navy.vercel.app/) | Thesis + workflow |
+| [/policies](https://gatedesk-navy.vercel.app/policies) | Issuer eligibility rules |
+| [/prove](https://gatedesk-navy.vercel.app/prove) | Investor DEMO proof + bind |
+| [/holders](https://gatedesk-navy.vercel.app/holders) | Allowlist · revoke |
+| [/audit](https://gatedesk-navy.vercel.app/audit) | Compliance trail |
+| [/spec](https://gatedesk-navy.vercel.app/spec) | Citadel / Connect / EURQ path |
+| [/ask](https://gatedesk-navy.vercel.app/ask) | $8,000 milestones |
 
 ---
 

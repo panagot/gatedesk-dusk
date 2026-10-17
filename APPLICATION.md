@@ -32,8 +32,8 @@ Vite/React DEMO today with local policy/prove/bind/revoke state. Soft-connect pa
 
 **KYB:** Yes — individual able to issue invoices for milestone payments
 
-**Live demo:** _(VERCEL_URL)_  
-**Repo:** _(GITHUB_URL)_ (private — invite reviewers on request)
+**Live demo:** https://gatedesk-navy.vercel.app/  
+**Repo:** https://github.com/panagot/gatedesk-dusk (private — invite reviewers on request)
 
 **Docs:** `/spec` on the live demo · this APPLICATION.md
 
