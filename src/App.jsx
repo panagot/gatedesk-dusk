@@ -11,6 +11,7 @@ import { Gate } from "./views/Gate.jsx";
 import { Guide } from "./views/Guide.jsx";
 import { Audit } from "./views/Audit.jsx";
 import { Spec } from "./views/Spec.jsx";
+import { Architecture } from "./views/Architecture.jsx";
 import { Ask } from "./views/Ask.jsx";
 
 const NAV = [
@@ -67,6 +68,9 @@ function SiteFooter() {
           <ul>
             <li>
               <Link href="/ask">$4,000 ask</Link>
+            </li>
+            <li>
+              <Link href="/architecture">Architecture</Link>
             </li>
             <li>
               <Link href="/spec">Integration spec</Link>
@@ -159,6 +163,7 @@ export default function App() {
         <Route path="/holders" component={Holders} />
         <Route path="/gate" component={Gate} />
         <Route path="/audit" component={Audit} />
+        <Route path="/architecture" component={Architecture} />
         <Route path="/spec" component={Spec} />
         <Route path="/ask" component={Ask} />
         <Route>

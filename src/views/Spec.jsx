@@ -6,8 +6,9 @@ export function Spec() {
       <div className="page-head">
         <h1>Integration spec</h1>
         <p>
-          Live beta wires Dusk Connect + hosted desk today. Milestone 2 soft-connects Citadel /
-          Moat for the prove session path.
+          Live beta wires Dusk Connect + hosted desk today. Finish soft-connects Citadel / Moat for
+          the prove session path. Diagram:{" "}
+          <Link href="/architecture">/architecture</Link>.
         </p>
       </div>
 
